@@ -10,7 +10,7 @@ AFFILIATE_KEY = "_okrQpFg"
 
 # دالة لإنشاء رابط أفلييت تلقائي من رابط منتج عادي
 def make_affiliate_link(product_url):
-    return f"https://s.click.aliexpress.com/deep_link.htm?aff_short_key={AFFILIATE_KEY}&dl_target_url={product_url}"
+    return "https://s.click.aliexpress.com/deep_link.htm?aff_short_key=" + AFFILIATE_KEY + "&dl_target_url=" + product_url
 
 # المنتجات (بروابط علي إكسبريس العادية)
 PRODUCTS = [
@@ -26,17 +26,23 @@ PRODUCTS = [
     }
 ]
 
+# إرسال رسالة نصية مع روابط
 def send_to_telegram(product):
-    caption = f"{product['title']}\n\n🔗 [Buy Now]({product['link']})"
+    caption = (
+        product['title'] + "\n\n"
+        "🖼️ Product Image: " + product['image'] + "\n"
+        "🔗 [Buy Now](" + product['link'] + ")"
+    )
+
     payload = {
         "chat_id": CHANNEL_ID,
-        "photo": product["image"],
-        "caption": caption,
-        "parse_mode": "Markdown"
+        "text": caption,
+        "parse_mode": "Markdown",
+        "disable_web_page_preview": False
     }
 
     response = requests.post(
-        f"https://api.telegram.org/bot{TOKEN}/sendPhoto",
+        f"https://api.telegram.org/bot{TOKEN}/sendMessage",
         data=payload
     )
 
